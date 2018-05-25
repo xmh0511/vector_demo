@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.8)
+project(untitled26)
+#set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_CXX_STANDARD 17)
+find_package(Boost 1.60 REQUIRED COMPONENTS system)
+set(SOURCE_FILES main.cpp)
+add_executable(untitled26 ${SOURCE_FILES})
+target_link_libraries(untitled26 ${Boost_LIBRARIES})
