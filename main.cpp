@@ -1,16 +1,20 @@
 #include <iostream>
 #include<boost/timer.hpp>
 #include <vector>
+#include <algorithm>
 template<typename T>
 class Vec_iterator
 {
-private:
-    using iter_point = T*;
-    using con_iter_point = const T*;
-    using iter_obj_type = T;
-    iter_point _save_ptr;
 public:
-    Vec_iterator(iter_point _ptr):_save_ptr(_ptr)
+    using pointer = T*;
+    using con_point = const T*;
+    pointer _save_ptr;
+    using iterator_category = std::input_iterator_tag;
+    using value_type = T;
+    using difference_type = T*;
+    using reference = T&;
+public:
+    Vec_iterator(pointer _ptr):_save_ptr(_ptr)
     {
 
     }
@@ -25,13 +29,18 @@ public:
         _save_ptr--;
         return *this;
     }
-    iter_obj_type& operator*()
+    value_type& operator*()
     {
         return *_save_ptr;
     }
     bool operator!=(const Vec_iterator& c)
     {
         return _save_ptr!=c._save_ptr;
+    }
+
+    bool operator==(const Vec_iterator& c)
+    {
+        return _save_ptr==c._save_ptr;
     }
 };
 template<typename T>
@@ -110,9 +119,23 @@ public:
     {
        return begin_ptr[n];
     }
+    const T& operator[](std::size_t n) const
+    {
+        return begin_ptr[n];
+    }
     std::size_t size() const
     {
         return _size;
+    }
+    iterator erase(iterator& t)
+    {
+         std::size_t distance = (&(*t) - begin_ptr);
+         for(std::size_t index=distance;index<_size;index++)
+         {
+             begin_ptr[index] = begin_ptr[index+1];
+         }
+        --_size;
+        return iterator(begin_ptr+distance);
     }
 public:
     iterator begin()
@@ -121,20 +144,8 @@ public:
     }
     iterator end()
     {
-
         return begin_ptr== nullptr? iterator(nullptr):iterator(begin_ptr+_size);
     }
-};
-class test
-{
-public:
-    test(int _i,float _f):a(_i),f(_f)
-    {
-
-    }
-public:
-    int a;
-    float f;
 };
 int main()
 {
@@ -168,5 +179,11 @@ int main()
 //        std::cout<<iter<<std::endl;
     }
     std::cout<<t.elapsed()<<std::endl;
+    auto v4 = Vec<std::string>{};
+    v4.push_back("abc");
+    v4.push_back("456");
+    v4.push_back("123");
+    auto result = std::find(v4.begin(),v4.end(),"456");
+    v4.erase(result);
     return 0;
 }
