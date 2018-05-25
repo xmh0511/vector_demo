@@ -11,7 +11,7 @@ public:
     pointer _save_ptr;
     using iterator_category = std::input_iterator_tag;
     using value_type = T;
-    using difference_type = T*;
+    using difference_type = std::size_t;
     using reference = T&;
 public:
     Vec_iterator(pointer _ptr):_save_ptr(_ptr)
@@ -41,6 +41,22 @@ public:
     bool operator==(const Vec_iterator& c)
     {
         return _save_ptr==c._save_ptr;
+    }
+    std::size_t operator-(const Vec_iterator& c)
+    {
+        return  _save_ptr-c._save_ptr;
+    }
+    Vec_iterator operator-(std::size_t t)
+    {
+        return  Vec_iterator(_save_ptr-t);
+    }
+    Vec_iterator operator+(std::size_t t)
+    {
+        return Vec_iterator(_save_ptr+t);
+    }
+    bool operator<(const Vec_iterator& c)
+    {
+        return _save_ptr<c._save_ptr;
     }
 };
 template<typename T>
@@ -180,10 +196,15 @@ int main()
     }
     std::cout<<t.elapsed()<<std::endl;
     auto v4 = Vec<std::string>{};
-    v4.push_back("abc");
+    v4.push_back("abc45");
     v4.push_back("456");
-    v4.push_back("123");
-    auto result = std::find(v4.begin(),v4.end(),"456");
-    v4.erase(result);
+    v4.push_back("1234444");
+    std::sort(v4.begin(),v4.end(),[](const std::string& a,const std::string& b){
+        return a.size()<b.size();
+    });
+    for(auto &iter:v4)
+    {
+        std::cout<<iter<<std::endl;
+    }
     return 0;
 }
