@@ -80,6 +80,10 @@ public:
     Vec()
     {
     }
+    ~Vec()
+    {
+        free(begin_ptr);
+    }
 private:
     void check_init()
     {
