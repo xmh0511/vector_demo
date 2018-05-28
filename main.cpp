@@ -2,6 +2,7 @@
 #include<boost/timer.hpp>
 #include <vector>
 #include <algorithm>
+#include <alloca.h>
 template<typename T>
 class Vec_iterator
 {
@@ -80,6 +81,14 @@ public:
     Vec()
     {
     }
+    ~Vec()
+    {
+        for(int i=_size-1;i>=0;i--)
+        {
+            begin_ptr[i].~T();
+        }
+        free(begin_ptr);
+    }
 private:
     void check_init()
     {
@@ -104,6 +113,10 @@ public:
             {
                 new(tmp_ptr+index) ele_type(begin_ptr[index]);
             }
+            for(int i=_size-1;i>=0;i--)
+            {
+                begin_ptr[i].~T();
+            }
             free(begin_ptr);
             _now_ptr = tmp_ptr+_size-1;
             begin_ptr = tmp_ptr;
@@ -123,6 +136,10 @@ public:
             for(std::size_t index=0;index<_size;index++)
             {
                 new(tmp_ptr+index) ele_type(begin_ptr[index]);
+            }
+            for(int i=_size-1;i>=0;i--)
+            {
+                begin_ptr[i].~T();
             }
             free(begin_ptr);
             _now_ptr = tmp_ptr+_size-1;
